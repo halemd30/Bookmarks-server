@@ -1,7 +1,7 @@
 const express = require('express')
 const uuid = require('uuid/v4')
 const logger = require('./logger')
-const isWebUrl = require('valid-url')
+const { isWebUri } = require('valid-url')
 
 const bookmarksRouter = express.Router()
 const bodyParser = express.json()
@@ -49,7 +49,7 @@ bookmarksRouter
       return res.status(400).send(`'rating' must be a number between 0 and 5`)
     }
 
-    if (!isWebUrl(url)) {
+    if (!isWebUri(url)) {
       logger.error(`Invalid URL of '${url}'`)
       return res.status(400).send(`'url' must be valid URL`)
     }
@@ -67,6 +67,10 @@ bookmarksRouter
     bookmarks.push(bookmark)
 
     logger.info(`Bookmark with id ${id} created`)
+    res
+      .status(201)
+      .location(`http://localhost:8000/bookmarks/${id}`)
+      .json(bookmark)
   })
 
 bookmarksRouter
