@@ -2,11 +2,12 @@ const express = require('express')
 const uuid = require('uuid/v4')
 const logger = require('./logger')
 const { isWebUri } = require('valid-url')
+//const { makeBookmarksArray } = require('../test/bookmarks.fixtures')
 
 const bookmarksRouter = express.Router()
 const bodyParser = express.json()
 
-const bookmarks = []
+//const bookmarks = makeBookmarksArray()
 
 bookmarksRouter
   .route('/bookmarks')
@@ -60,8 +61,8 @@ bookmarksRouter
       id, 
       title,
       url,
-      rating,
-      description
+      description,
+      rating
     }
 
     bookmarks.push(bookmark)
