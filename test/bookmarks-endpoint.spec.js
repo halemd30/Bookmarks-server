@@ -3,7 +3,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const { makeBookmarksArray } = require('./bookmarks.fixtures')
 
-describe.only('Bookmarks Endpoints', function() {
+describe('Bookmarks Endpoints', function() {
   let db
 
   before('make knex instance', () => {
@@ -14,7 +14,7 @@ describe.only('Bookmarks Endpoints', function() {
     app.set('db', db)
   })
 
-  after('disconnect from db', () => db.destroy())
+  //after('disconnect from db', () => db.destroy())
 
   before('clean the table', () => db('bookmarks').truncate())
 
@@ -34,12 +34,13 @@ describe.only('Bookmarks Endpoints', function() {
 
       beforeEach('insert articles', () => {
         return db
-          .insert(testBookmarks)
           .into('bookmarks')
+          .insert(testBookmarks)
       })
 
       it('responds with 200 and all of the bookmarks', () => {
         return supertest(app)
+          
           .get('/bookmarks')
           .expect(200, testBookmarks)
       })
@@ -56,7 +57,7 @@ describe.only('Bookmarks Endpoints', function() {
       })
     })
 
-    context('Given there are aritcles in the database', () => {
+    context('Given there are bookmarks in the database', () => {
       const testBookmarks = makeBookmarksArray()
 
       beforeEach('insert bookmarks', () => {
@@ -74,5 +75,5 @@ describe.only('Bookmarks Endpoints', function() {
       })
     })
   })
-  
+
 })
