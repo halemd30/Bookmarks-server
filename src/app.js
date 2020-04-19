@@ -7,6 +7,7 @@ const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const uuid = require('uuid/v4')
 const bookmarksRouter = require('./bookmarks-router')
+//const logger = require('./logger')
 
 const app = express()
 
