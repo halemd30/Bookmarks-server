@@ -3,3 +3,13 @@
 {"message":"Bookmark with id 123456 not found","level":"error"}
 {"message":"Bookmark with id 123456 not found","level":"error"}
 {"message":"Bookmark with id 123456 not found","level":"error"}
+{"message":"Bookmark with id 123456 not found","level":"error"}
+{"message":"Bookmark with id 123456 not found","level":"error"}
+{"message":"Invalid rating '3' supplied","level":"error"}
+{"message":"Bookmark with id 123456 not found","level":"error"}
+{"message":"Invalid rating '3' supplied","level":"error"}
+{"message":"Bookmark with id 123456 not found","level":"error"}
+{"message":"Invalid rating '3' supplied","level":"error"}
+{"message":"Invalid rating '3' supplied","level":"error"}
+{"message":"Invalid URL of 'bookmarks.com'","level":"error"}
+{"message":"Invalid URL of 'bookmarks.com'","level":"error"}
