@@ -31,7 +31,7 @@ app.use(cors())
 //   next()
 // })
 
-app.use(bookmarksRouter)
+app.use('/api/bookmarks', bookmarksRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello, world!')
@@ -47,7 +47,5 @@ app.use(function errorHandler(error, req, res, next) {
   }
   res.status(500).json(response)
 })
-
-
 
 module.exports = app
