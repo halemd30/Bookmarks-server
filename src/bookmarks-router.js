@@ -56,7 +56,7 @@ bookmarksRouter
       .then(bookmark => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${bookmark.id}`))
+          .location(path.posix.join(req.originalUrl + `/${bookmark.id}`))
           .json(serializeBookmark(bookmark))
       })
       .catch(next)
