@@ -18,7 +18,7 @@ const serializeBookmark = bookmark => ({
 })
 
 bookmarksRouter
-  .route('/bookmarks')
+  .route('/')
   .get((req, res, next) => {
     BookmarksService.getAllBookmarks(req.app.get('db'))
       .then(bookmarks => {
@@ -29,7 +29,7 @@ bookmarksRouter
   .post(bodyParser, (req, res, next) => {
     const { title, url, rating, description } = req.body
     const newBookmark = { title, url, description, rating }
-    const ratingNum = Number(rating)
+    //const ratingNum = Number(rating)
 
     for (const [key, value] of Object.entries(newBookmark)) {
       if (value == null) {
@@ -39,7 +39,7 @@ bookmarksRouter
       }
     }
 
-    if (!Number.isInteger(ratingNum) || ratingNum < 0 || ratingNum > 5) {
+    if (!Number.isInteger(rating) || rating < 0 || rating > 5) {
       logger.error(`Invalid rating '${rating}' supplied`)
       return res.status(400).send(`'rating' must be a number between 0 and 5`)
     }
@@ -63,7 +63,7 @@ bookmarksRouter
   })
 
 bookmarksRouter
-  .route('/bookmarks/:bookmark_id')
+  .route('/:bookmark_id')
   .all((req, res, next) => {
     BookmarksService.getById(
       req.app.get('db'),
@@ -108,7 +108,7 @@ bookmarksRouter
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
-          message: `Request body must contain either 'title', 'style', or 'content'`
+          message: `Request body must contain either 'title', 'url', 'description' or 'rating'`
         }
       })
     }

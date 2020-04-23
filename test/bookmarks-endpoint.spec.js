@@ -122,9 +122,9 @@ describe('Bookmarks Endpoints', () => {
     it('creates a bookmark, responding with 201 and the new bookmark', () => {
       const newBookmark = {
         title: 'Test new bookmark',
-        url: 'bookmarks.com',
+        url: 'http://bookmarks.com',
         description: 'Test new bookmark description',
-        rating: '3'
+        rating: 3
       }
       return supertest(app)
         .post('/api/bookmarks')
@@ -145,14 +145,14 @@ describe('Bookmarks Endpoints', () => {
         )
     })
 
-    const requiredFields = ['title', 'url', 'description', 'rating']
+    const requiredFields = ['title', 'url', 'description']
 
     requiredFields.forEach(field => {
       const newBookmark = {
         title: 'test new bookmark',
         url: 'test new url',
         description: 'test new description',
-        rating: '3'
+        //rating: 3
       }
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -189,7 +189,7 @@ describe('Bookmarks Endpoints', () => {
 
       it('responds with 204 and removes the bookmark', () => {
         const idToRemove = 2
-        const expectedBookmark = testBookmarks.filter(bookmark => bookmark !== idToRemove)
+        const expectedBookmark = testBookmarks.filter(bookmark => bookmark.id !== idToRemove)
 
         return supertest(app)
           .delete(`/api/bookmarks/${idToRemove}`)
@@ -198,6 +198,84 @@ describe('Bookmarks Endpoints', () => {
             supertest(app)
             .get('/api/bookmarks')
             .expect(expectedBookmark)
+          )
+      })
+    })
+  })
+
+  describe('PATCH /api/bookmarks/:bookmark_id', () => {
+    context('Given no articles', () => {
+      it('responds with 404', () => {
+        const bookmarkId = 123456
+        return supertest(app)
+          .patch(`/api/bookmarks/${bookmarkId}`)
+          .expect(404, { error: { message: `Bookmark doesn't exist` } })
+      })
+    })
+
+    context('Given there are bookmarks in the database', () => {
+      const testBookmarks = makeBookmarksArray()
+
+      beforeEach('insert bookmarks', () => {
+        return db
+          .into('bookmarks')
+          .insert(testBookmarks)
+      })
+
+      it('responds with 204 and updates the bookmark', () => {
+        const idToUpdate = 2
+        const updateBookmark = {
+          title: 'updated bookmark title',
+          url: 'updated url',
+          description: 'updated description',
+          rating: 5
+        }
+        const expectedBookmark = {
+          ...testBookmarks[idToUpdate - 1],
+          ...updateBookmark
+        }
+        return supertest(app)
+          .patch(`/api/bookmarks/${idToUpdate}`)
+          .send(updateBookmark)
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/bookmarks/${idToUpdate}`)
+              .expect(expectedBookmark)
+          )
+      })
+
+      it('responds with 400 when no required fields are supplied', () => {
+        const idToUpdate = 2
+        return supertest(app)
+          .patch(`/api/bookmarks/${idToUpdate}`)
+          .send({ irrelevantField: 'Foo' })
+          .expect(400, {
+            message: `Request body must contain either 'title', 'url', 'description' or 'rating'`
+          })
+      })
+
+      it(`responds with 204 when updating only a subset of required fields`, () => {
+        const idToUpdate = 2
+        const updateBookmark = {
+          title: 'updated bookmark title'
+        }
+        const expectedBookmark = {
+          ...testBookmarks[idToUpdate - 1],
+          ...updateBookmark
+        }
+
+        return supertest(app)
+          .patch(`/api/bookmarks/${idToUpdate}`)
+          .send({
+            ...updateBookmark,
+            fieldToIgnore: 'should not be in GET response'
+          })
+          .expect(204)
+          .then(res => 
+              supertest(app)
+                .get(`/api/bookmarks/${idToUpdate}`)
+                .expect(expectedBookmark)
           )
       })
     })
